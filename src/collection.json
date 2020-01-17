@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-samurai": {
+      "description": "A blank schematic.",
+      "factory": "./ng-samurai/index#ngSamurai"
+    }
+  }
+}
