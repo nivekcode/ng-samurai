@@ -2,6 +2,7 @@
  * Public API Surface of lib-sample
  */
 
-export * from './lib/lib-sample.service';
-export * from './lib/lib-sample.component';
-export * from './lib/lib-sample.module';
+export * from './lib/greeting/greeting.module';
+export * from './lib/greeting/greeting.component';
+export * from './lib/time/time.module';
+export * from './lib/time/time.component';
