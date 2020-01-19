@@ -35,7 +35,7 @@ const getFileDirectoryPath = (filePath: string) => filePath.substring(0, filePat
 const getModuleName = (filePath: string) => filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
 
 const createIndexFileContent = (): string => {
-    return `export * from './public-api;'`
+    return `export * from './public-api';`
 };
 
 const createPackageJSONContent = (): string => {
@@ -51,13 +51,13 @@ const createPackageJSONContent = (): string => {
 const createMainPublicAPIContent = (libariePaths: string[]): string => {
     let content = '';
     libariePaths.forEach((path: string) => {
-        content += `export * from ${path};
+        content += `export * from '${path}';
         `;
     });
     return content;
 };
 
 const createPublicAPI = (moduleName: string): string => {
-    return `export * from './${moduleName}'`
+    return `export * from './${moduleName}';`
 };
 // TODO create another function which adds the top level index.ts and ng-package.json
