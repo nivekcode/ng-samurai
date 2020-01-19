@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'lib-greeting',
   templateUrl: './greeting.component.html',
   styleUrls: ['./greeting.component.css']
 })
-export class GreetingComponent implements OnInit {
+export class GreetingComponent {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  @Input() name: string;
 }

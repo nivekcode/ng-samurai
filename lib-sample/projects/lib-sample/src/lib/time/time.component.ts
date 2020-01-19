@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import moment from 'moment';
 
 @Component({
   selector: 'lib-time',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TimeComponent implements OnInit {
 
-  constructor() { }
+  now;
 
   ngOnInit() {
+    this.now = moment().format('DD.MM.YYYY');
   }
 
 }
