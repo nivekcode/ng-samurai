@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsAngularExtensionsSubModule",
+  "title": "Angular SubModule Options Schema",
+  "type": "object",
+  "description": "Creates a new sub-module for Angular library in the given or default project.",
+  "properties": {
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path at which to create the sub-module files, relative to the current workspace. Default is a folder with the same name as the sub-module in the project root.",
+      "visible": false
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the sub-module.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the sub-module?"
+    }
+  },
+  "required": ["name"]
+}

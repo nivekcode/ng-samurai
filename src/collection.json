@@ -4,6 +4,10 @@
     "ng-samurai": {
       "description": "A blank schematic.",
       "factory": "./ng-samurai/index#ngSamurai"
+    },
+    "submodule": {
+      "description": "A schematic to generate tree-shakeable sub-module in Angular library (ng-packagr secondary entry  point).",
+      "factory": "./submodule/index#submodule"
     }
   }
 }
