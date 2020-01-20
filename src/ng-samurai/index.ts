@@ -9,12 +9,13 @@ export function ngSamurai(_options: any): Rule {
         tree.getDir('./lib-sample/projects/lib-sample/src/lib').visit((filePath) => {
             if (filePath.endsWith('module.ts')) {
                 const fileDirectoryPath = getFileDirectoryPath(filePath);
-                const moduleName = getModuleName(filePath);
+                const relativeFilePaths = getRelativeFilePaths(tree, fileDirectoryPath);
                 relativeLibraryPaths.push(getRelativeLibraryPath(filePath));
 
                 tree.create(`${fileDirectoryPath}/index.ts`, createIndexFileContent());
                 tree.create(`${fileDirectoryPath}/package.json`, createPackageJSONContent());
-                tree.create(`${fileDirectoryPath}/public-api.ts`, createPublicAPI(moduleName));
+                tree.create(`${fileDirectoryPath}/public-api.ts`, createPublicAPI(relativeFilePaths));
+
             }
         });
 
@@ -24,6 +25,20 @@ export function ngSamurai(_options: any): Rule {
     };
 }
 
+const getRelativeFilePaths = (tree: Tree, fileDirectoryPath: string): string[] => {
+    const relativePaths: string[] = [];
+    tree.getDir(fileDirectoryPath).visit((filePath) => {
+        if (filePath.endsWith('.ts')) {
+            relativePaths.push(
+                filePath
+                    .replace(fileDirectoryPath, '.')
+                    .replace('.ts', '')
+            );
+        }
+    });
+    return relativePaths;
+};
+
 const getRelativeLibraryPath = (filePath: string): string => {
     const libpath = filePath.split('projects/')[1];
     return libpath.substring(0, libpath.lastIndexOf('/'));
@@ -31,8 +46,6 @@ const getRelativeLibraryPath = (filePath: string): string => {
 
 
 const getFileDirectoryPath = (filePath: string) => filePath.substring(0, filePath.lastIndexOf('/'));
-
-const getModuleName = (filePath: string) => filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
 
 const createIndexFileContent = (): string => {
     return `export * from './public-api';`
@@ -57,7 +70,8 @@ const createMainPublicAPIContent = (libariePaths: string[]): string => {
     return content;
 };
 
-const createPublicAPI = (moduleName: string): string => {
-    return `export * from './${moduleName}';`
+const createPublicAPI = (relativeFilePaths: string[]): string => {
+    let content = '';
+    relativeFilePaths.forEach((filePath: string) => `export * from './${filePath}';`);
+    return content
 };
-// TODO create another function which adds the top level index.ts and ng-package.json
