@@ -73,6 +73,6 @@ const createMainPublicAPIContent = (libariePaths: string[]): string => {
 
 const createPublicAPI = (relativeFilePaths: string[]): string => {
     let content = '';
-    relativeFilePaths.forEach((filePath: string) => content += `export * from './${filePath}';`);
+    relativeFilePaths.forEach((filePath: string) => content += `export * from '${filePath}';`);
     return content;
 };
