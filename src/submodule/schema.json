@@ -4,7 +4,17 @@
   "title": "Angular SubModule Options Schema",
   "type": "object",
   "description": "Creates a new sub-module for Angular library in the given or default project.",
+
   "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the sub-module.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the sub-module?"
+    },
     "path": {
       "type": "string",
       "format": "path",
@@ -18,14 +28,40 @@
         "$source": "projectName"
       }
     },
-    "name": {
+
+    "generateComponent": {
+      "alias": "gc",
+      "type": "boolean",
+      "description": "Should a default component be generated for a sub-module? (If yes, module will always be generated too)",
+      "default": true
+    },
+    "generateModule": {
+      "alias": "gm",
+      "type": "boolean",
+      "description": "Should a default module be generated for a sub-module?",
+      "default": true
+    },
+
+    "style": {
+      "description": "The file extension or preprocessor to use for component style files.",
       "type": "string",
-      "description": "The name of the sub-module.",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What name would you like to use for the sub-module?"
+      "default": "css",
+      "enum": ["css", "scss", "sass", "less", "styl"]
+    },
+    "inlineStyle": {
+      "description": "When true, includes styles inline in the component.ts file. Only CSS styles can be included inline. By default, an external styles file is created and referenced in the component.ts file.",
+      "type": "boolean",
+      "default": false
+    },
+    "inlineTemplate": {
+      "description": "When true, includes template inline in the component.ts file. By default, an external template file is created and referenced in the component.ts file.",
+      "type": "boolean",
+      "default": false
+    },
+    "skipTests": {
+      "type": "boolean",
+      "description": "When true, does not create \"spec.ts\" test files for the new component.",
+      "default": false
     }
   },
   "required": ["name"]

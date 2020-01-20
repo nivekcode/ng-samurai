@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
-    "test": "npm run build && jasmine src/**/*_spec.js"
+    "test": "mocha src/**/*.spec.ts --require ts-node/register",
+    "test:watch": "mocha src/**/*.spec.ts --require ts-node/register --watch-extensions ts --watch"
   },
   "keywords": [
     "schematics"
@@ -17,12 +18,13 @@
     "@angular-devkit/core": "^8.3.23",
     "@angular-devkit/schematics": "^8.3.23",
     "@schematics/angular": "^8.3.23",
-    "@types/jasmine": "^3.3.9",
-    "@types/node": "^8.0.31",
-    "jasmine": "^3.3.1",
     "typescript": "~3.5.3"
   },
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^8.10.59",
+    "mocha": "^7.0.0",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.6.2"
   }
 }
