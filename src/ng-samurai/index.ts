@@ -11,6 +11,7 @@ export function ngSamurai(_options: any): Rule {
                 const fileDirectoryPath = getFileDirectoryPath(filePath);
                 const relativeFilePaths = getRelativeFilePaths(tree, fileDirectoryPath);
                 relativeLibraryPaths.push(getRelativeLibraryPath(filePath));
+                console.log('RelativeFilepaths', relativeFilePaths);
 
                 tree.create(`${fileDirectoryPath}/index.ts`, createIndexFileContent());
                 tree.create(`${fileDirectoryPath}/package.json`, createPackageJSONContent());
@@ -72,6 +73,6 @@ const createMainPublicAPIContent = (libariePaths: string[]): string => {
 
 const createPublicAPI = (relativeFilePaths: string[]): string => {
     let content = '';
-    relativeFilePaths.forEach((filePath: string) => `export * from './${filePath}';`);
-    return content
+    relativeFilePaths.forEach((filePath: string) => content += `export * from './${filePath}';`);
+    return content;
 };
