@@ -1,5 +1,5 @@
 {
-  "ngPckage": {
+  "ngPackage": {
     "lib": {
       "entryFile": "public_api.ts"
     }
