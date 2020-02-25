@@ -1,27 +1,43 @@
-import {Rule, SchematicContext, Tree} from '@angular-devkit/schematics';
+import {chain, Rule, SchematicContext, Tree} from '@angular-devkit/schematics';
+import {getLibRootPath, getSourceRootPath} from '../shared/pathHelper';
+import {submodule} from '../submodule/index';
+import {buildRelativePath} from '@schematics/angular/utility/find-module';
+import {generatePublicAPIcontent, updatePublicAPI} from '../rules/update-public-api.rule';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 export function ngSamurai(_options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
-        const relativeLibraryPaths: string[] = [];
 
-        tree.getDir('./lib-sample/projects/lib-sample/src/lib').visit((filePath) => {
+        const sourceRootPath = getSourceRootPath(tree);
+        const libRootPath = getLibRootPath(tree);
+        const rules: Rule[] = [];
+        const modulePaths: string[] = [];
+
+        tree.getDir(libRootPath).visit(filePath => {
             if (filePath.endsWith('module.ts')) {
-                const fileDirectoryPath = getFileDirectoryPath(filePath);
-                const relativeFilePaths = getRelativeFilePaths(tree, fileDirectoryPath);
-                relativeLibraryPaths.push(getRelativeLibraryPath(filePath));
+                modulePaths.push(filePath);
+                rules.push(submodule({
+                    name: getName(filePath),
+                    filesPath: '../submodule/files',
+                    path: libRootPath,
+                    generateComponent: false,
+                    generateModule: false
+                }));
 
-                tree.create(`${fileDirectoryPath}/index.ts`, createIndexFileContent());
-                tree.create(`${fileDirectoryPath}/package.json`, createPackageJSONContent());
-                tree.create(`${fileDirectoryPath}/public-api.ts`, createPublicAPI(relativeFilePaths));
+                let relativeFilePaths: string[] = [];
 
+                tree.getDir(getFileDirectoryPath(filePath)).visit(file => {
+                    if (file.endsWith('ts')) {
+                        relativeFilePaths.push(buildRelativePath(filePath, file));
+                    }
+                });
+                rules.push(updatePublicAPI(getFileDirectoryPath(filePath), generatePublicAPIcontent(relativeFilePaths)));
             }
         });
-
-        tree.overwrite('./lib-sample/projects/lib-sample/src/public-api.ts', createMainPublicAPIContent(relativeLibraryPaths));
-
-        return tree;
+        const publicAPIPaths = modulePaths.map((modulePath: string) => convertModulePathToPublicAPIImport(modulePath));
+        tree.overwrite(`${sourceRootPath}/public-api.ts`, generatePublicAPIcontent(publicAPIPaths));
+        return chain(rules);
     };
 }
 
@@ -44,8 +60,14 @@ const getRelativeLibraryPath = (filePath: string): string => {
     return libpath.substring(0, libpath.lastIndexOf('/'));
 };
 
-
 const getFileDirectoryPath = (filePath: string) => filePath.substring(0, filePath.lastIndexOf('/'));
+
+const getName = (filePath: string): string => {
+    const pathSegments = filePath.split('/');
+    // the name is always the second last pathSegment
+    return pathSegments[pathSegments.length - 2];
+};
+
 
 const createIndexFileContent = (): string => {
     return `export * from './public-api';`
@@ -68,6 +90,12 @@ const createMainPublicAPIContent = (libariePaths: string[]): string => {
         `;
     });
     return content;
+};
+
+const convertModulePathToPublicAPIImport = (modulePath: string): string => {
+    const regex = /\/projects\/(.*)(\/)/;
+    const pathSegments = regex.exec(modulePath);
+    return pathSegments && pathSegments.length ? pathSegments[1] : '';
 };
 
 const createPublicAPI = (relativeFilePaths: string[]): string => {

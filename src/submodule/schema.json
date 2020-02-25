@@ -33,13 +33,13 @@
       "alias": "gc",
       "type": "boolean",
       "description": "Should a default component be generated for a sub-module? (If yes, module will always be generated too)",
-      "default": true
+      "default": false
     },
     "generateModule": {
       "alias": "gm",
       "type": "boolean",
       "description": "Should a default module be generated for a sub-module?",
-      "default": true
+      "default": false
     },
 
     "style": {

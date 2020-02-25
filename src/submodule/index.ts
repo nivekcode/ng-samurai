@@ -40,10 +40,9 @@ export function submodule(_options: SubmoduleOptions): Rule {
         const path = _options.path || `${project.sourceRoot}/lib`;
 
         const parsed = parseName(path, _options.name);
-
         _options.name = parsed.name;
+        const sourceTemplate = url(_options.filesPath || './files');
 
-        const sourceTemplate = url('./files');
         const sourceTemplateParametrized = apply(sourceTemplate, [
             template({
                 ..._options,
@@ -71,7 +70,6 @@ export function submodule(_options: SubmoduleOptions): Rule {
                 })
             );
         }
-
         return chain(rules);
     };
 }
