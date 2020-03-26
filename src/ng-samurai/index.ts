@@ -3,6 +3,7 @@ import {getLibRootPath, getSourceRootPath} from '../shared/pathHelper';
 import {submodule} from '../submodule/index';
 import {buildRelativePath} from '@schematics/angular/utility/find-module';
 import {generatePublicAPIcontent, updatePublicAPI} from '../rules/update-public-api.rule';
+import {updateImportPaths} from '../rules/update-import-paths.rule';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -15,6 +16,12 @@ export function ngSamurai(_options: any): Rule {
         const modulePaths: string[] = [];
 
         tree.getDir(libRootPath).visit(filePath => {
+
+            if(filePath.endsWith('.ts')) {
+                // TODO
+                // const updatedFile = updateImportPaths(`./${filePath}`);
+            }
+
             if (filePath.endsWith('module.ts')) {
                 modulePaths.push(filePath);
                 rules.push(submodule({
