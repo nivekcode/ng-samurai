@@ -18,7 +18,7 @@
     "@angular-devkit/core": "^8.3.23",
     "@angular-devkit/schematics": "^8.3.23",
     "@schematics/angular": "^8.3.23",
-    "typescript": "~3.5.3"
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",

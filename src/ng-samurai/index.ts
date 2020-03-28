@@ -1,7 +1,7 @@
 import {chain, Rule, SchematicContext, Tree} from '@angular-devkit/schematics';
 import {getLibRootPath, getSourceRootPath} from '../shared/pathHelper';
 import {submodule} from '../submodule/index';
-import {buildRelativePath} from '@schematics/angular/utility/find-module';
+import {buildRelativePath, findModule, findModuleFromOptions} from '@schematics/angular/utility/find-module';
 import {generatePublicAPIcontent, updatePublicAPI} from '../rules/update-public-api.rule';
 import {updateImportPaths} from '../rules/update-import-paths.rule';
 
@@ -19,7 +19,7 @@ export function ngSamurai(_options: any): Rule {
 
             if(filePath.endsWith('.ts')) {
                 // TODO
-                const updatedFile = updateImportPaths(`./${filePath}`);
+                const updatedFile = updateImportPaths(tree, `./${filePath}`);
                 console.log(`============= ${filePath} ===================`);
                 console.log(updatedFile);
             }
