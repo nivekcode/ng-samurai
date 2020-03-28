@@ -19,7 +19,9 @@ export function ngSamurai(_options: any): Rule {
 
             if(filePath.endsWith('.ts')) {
                 // TODO
-                // const updatedFile = updateImportPaths(`./${filePath}`);
+                const updatedFile = updateImportPaths(`./${filePath}`);
+                console.log(`============= ${filePath} ===================`);
+                console.log(updatedFile);
             }
 
             if (filePath.endsWith('module.ts')) {
