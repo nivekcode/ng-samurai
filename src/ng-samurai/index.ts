@@ -10,6 +10,8 @@ import {updateImportPaths} from '../rules/update-import-paths.rule';
 export function ngSamurai(_options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
 
+        console.log('Options', _options);
+
         const sourceRootPath = getSourceRootPath(tree);
         const libRootPath = getLibRootPath(tree);
         const rules: Rule[] = [];
@@ -19,7 +21,7 @@ export function ngSamurai(_options: any): Rule {
 
             if(filePath.endsWith('.ts')) {
                 // TODO
-                const updatedFile = updateImportPaths(tree, `./${filePath}`);
+                const updatedFile = updateImportPaths(tree, `.${filePath}`);
                 console.log(`============= ${filePath} ===================`);
                 console.log(updatedFile);
             }

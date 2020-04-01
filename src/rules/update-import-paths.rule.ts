@@ -1,10 +1,7 @@
 import * as fs from 'fs';
 import * as ts from 'typescript';
 import { Tree } from '@angular-devkit/schematics';
-import {
-  findModule,
-  findModuleFromOptions
-} from '@schematics/angular/utility/find-module';
+import { findModule } from '@schematics/angular/utility/find-module';
 
 interface Modification {
   startPosition: number;
@@ -13,7 +10,10 @@ interface Modification {
 }
 
 export function updateImportPaths(tree: Tree, filePath: string): string {
-  const moduleOfFile = filePath.substring(0, filePath.lastIndexOf('/'));
+  const moduleOfFile = findModule(
+    tree,
+    filePath.substring(0, filePath.lastIndexOf('/'))
+  );
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const sourceFile = ts.createSourceFile(
     filePath,
@@ -31,29 +31,22 @@ function modify(
   filePath: string,
   tree: Tree
 ): Modification[] {
-  let modifications: Modification[] = [];
+  const modifications: Modification[] = [];
+
   function updatePaths(node: ts.Node) {
     if (ts.isImportDeclaration(node)) {
       const importSegments = node.getChildren();
-      const importStringLiteral = importSegments.find(
-        segment => segment.kind === ts.SyntaxKind.StringLiteral
-      );
-
-      console.log(
-        'Is module import',
-        importsForeignModuleCode(
-          importStringLiteral as any,
-          moduleOfFile,
-          filePath,
-          tree
-        )
-      );
+      const importStringLiteral =
+        importSegments.find(
+          segment => segment.kind === ts.SyntaxKind.StringLiteral
+        ) || '';
 
       if (
         importStringLiteral &&
         !isThirdPartyLibImport(importStringLiteral)
-        // && importsForeignModuleCode(importStringLiteral, moduleOfFile, filePath, tree)
+        && importsForeignModuleCode(importStringLiteral, moduleOfFile, filePath, tree)
       ) {
+        console.log('Bluberbliblu');
         modifications.push({
           startPosition: importStringLiteral.pos + 1,
           endPosition: importStringLiteral.end + 1,
@@ -86,16 +79,29 @@ function importsForeignModuleCode(
   const levels = Math.floor(numberOfDots / 2);
   const splittedPath = filePath.split('/');
   const folderPath = splittedPath
-    .slice(0, splittedPath.length - levels)
+    .slice(0, splittedPath.length - levels - 1)
     .join('/');
 
-  if(!folderPath || levels === 0){
+  const secondpartOfPath = (text as any).match(/\/[a-zA-Z0-9].*/);
+  if (!secondpartOfPath) {
     return false;
   }
-
-  const modulePath = findModule(tree, folderPath);
-  return fileModulePath === modulePath;
+  if (!folderPath || levels === 0) {
+    return false;
+  }
+  // import {HowdyTimeModule} from 'lib-sample/src/lib/time';
+  console.log('Folderpath', folderPath);
+  console.log('Scondpart', secondpartOfPath);
+  const modulePath = findModule(tree, `${folderPath}/${secondpartOfPath}`);
+  console.log('New Importpath: ', convertModulePathToPublicAPIImport(modulePath));
+  return fileModulePath !== modulePath;
 }
+
+const convertModulePathToPublicAPIImport = (modulePath: string): string => {
+  const regex = /\/projects\/(.*)(\/)/;
+  const pathSegments = regex.exec(modulePath);
+  return pathSegments && pathSegments.length ? pathSegments[1] : '';
+};
 
 function applyReplacements(
   source: string,
