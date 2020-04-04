@@ -2,29 +2,17 @@ import * as fs from 'fs';
 import * as ts from 'typescript';
 import { Tree } from '@angular-devkit/schematics';
 import { findModule } from '@schematics/angular/utility/find-module';
-import { convertToAbsolutPath, getFolderPath } from '../shared/pathHelper';
+import {convertModulePathToPublicAPIImport, convertToAbsolutPath, getFolderPath} from '../shared/pathHelper';
 
-interface Modification {
+export interface Modification {
   startPosition: number;
   endPosition: number;
   content: string;
 }
 
-// TODO: Split in two methods - getModifications - applyModifications
-
-export function updateImportPaths(tree: Tree, filePath: string): string {
+export function getImportPathModifications(tree: Tree, filePath: string): Modification[] {
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
-  const sourceFile = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
-  const modifications = modify(sourceFile, filePath, tree);
-
-  if(modifications.length === 0){
-    return;
-  }
-  const modifiedSource = applyReplacements(sourceCode, modifications);
-  tree.overwrite(filePath, modifiedSource);
-}
-
-function modify(node: ts.Node, filePath: string, tree: Tree): Modification[] {
+  const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
   const modifications: Modification[] = [];
   const moduleOfFile = findModule(tree, getFolderPath(filePath));
 
@@ -49,9 +37,19 @@ function modify(node: ts.Node, filePath: string, tree: Tree): Modification[] {
       }
     }
   }
-
-  node.forEachChild(updatePaths);
+  rootNode.forEachChild(updatePaths);
   return modifications;
+}
+
+export function applyModificationsToFile(filePath: string, modifications: Modification[]): string {
+  let source = fs.readFileSync(filePath, 'utf-8');
+  for (const modification of modifications.reverse()) {
+    source =
+        source.slice(0, modification.startPosition) +
+        modification.content +
+        source.slice(modification.endPosition);
+  }
+  return source;
 }
 
 function isThirdPartyLibImport(importNode: ts.Node): boolean {
@@ -70,20 +68,4 @@ function importsForeignModuleCode(
 
 function getModulePathFromImport(importLiteral: string, filePath: string, tree: Tree): string {
   return findModule(tree, convertToAbsolutPath(filePath, importLiteral));
-}
-
-const convertModulePathToPublicAPIImport = (modulePath: string): string => {
-  const regex = /\/projects\/(.*)(\/)/;
-  const pathSegments = regex.exec(modulePath);
-  return pathSegments && pathSegments.length ? pathSegments[1] : '';
-};
-
-function applyReplacements(source: string, modifications: Modification[]): string {
-  for (const modification of modifications.reverse()) {
-    source =
-      source.slice(0, modification.startPosition) +
-      modification.content +
-      source.slice(modification.endPosition);
-  }
-  return source;
 }
