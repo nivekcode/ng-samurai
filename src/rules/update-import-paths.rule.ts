@@ -10,6 +10,8 @@ interface Modification {
   content: string;
 }
 
+// TODO: Split in two methods - getModifications - applyModifications
+
 export function updateImportPaths(tree: Tree, filePath: string): string {
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const sourceFile = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
