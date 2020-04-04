@@ -14,7 +14,12 @@ export function updateImportPaths(tree: Tree, filePath: string): string {
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const sourceFile = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
   const modifications = modify(sourceFile, filePath, tree);
-  return applyReplacements(sourceCode, modifications);
+
+  if(modifications.length === 0){
+    return;
+  }
+  const modifiedSource = applyReplacements(sourceCode, modifications);
+  tree.overwrite(filePath, modifiedSource);
 }
 
 function modify(node: ts.Node, filePath: string, tree: Tree): Modification[] {
@@ -33,10 +38,11 @@ function modify(node: ts.Node, filePath: string, tree: Tree): Modification[] {
         !isThirdPartyLibImport(importNode) &&
         importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
       ) {
+        const moduleFromImportPath = getModulePathFromImport(importNode.getText(), filePath, tree);
         modifications.push({
           startPosition: importNode.pos + 1,
           endPosition: importNode.end + 1,
-          content: `'foo';`
+          content: `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
         });
       }
     }
@@ -57,8 +63,11 @@ function importsForeignModuleCode(
   tree: Tree
 ): boolean {
   const importStringLiteral = importNode.getText();
-  const modulePath = findModule(tree, convertToAbsolutPath(filePath, importStringLiteral));
-  return fileModulePath !== modulePath;
+  return fileModulePath !== getModulePathFromImport(importStringLiteral, filePath, tree);
+}
+
+function getModulePathFromImport(importLiteral: string, filePath: string, tree: Tree): string {
+  return findModule(tree, convertToAbsolutPath(filePath, importLiteral));
 }
 
 const convertModulePathToPublicAPIImport = (modulePath: string): string => {
