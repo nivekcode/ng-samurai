@@ -15,43 +15,35 @@ export interface Modification {
 }
 
 export function getImportPathModifications(tree: Tree, filePath: string): Modification[] {
-  try {
-    const sourceCode = fs.readFileSync(filePath, 'utf-8');
-    const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
-    const modifications: Modification[] = [];
-    const moduleOfFile = findModule(tree, getFolderPath(filePath));
+  const sourceCode = fs.readFileSync(filePath, 'utf-8');
+  const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
+  const modifications: Modification[] = [];
+  const moduleOfFile = findModule(tree, getFolderPath(filePath));
 
-    function updatePaths(node: ts.Node) {
-      if (ts.isImportDeclaration(node)) {
-        const importSegments = node.getChildren();
-        const importNode = importSegments.find(
-          segment => segment.kind === ts.SyntaxKind.StringLiteral
-        );
+  function updatePaths(node: ts.Node) {
+    if (ts.isImportDeclaration(node)) {
+      const importSegments = node.getChildren();
+      const importNode = importSegments.find(
+        segment => segment.kind === ts.SyntaxKind.StringLiteral
+      );
 
-        if (
-          importNode &&
-          !isThirdPartyLibImport(importNode) &&
-          importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
-        ) {
-          const moduleFromImportPath = getModulePathFromImport(
-            importNode.getText(),
-            filePath,
-            tree
-          );
-          modifications.push({
-            startPosition: importNode.pos + 1,
-            endPosition: importNode.end + 1,
-            content: `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
-          });
-        }
+      if (
+        importNode &&
+        !isThirdPartyLibImport(importNode) &&
+        importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
+      ) {
+        const moduleFromImportPath = getModulePathFromImport(importNode.getText(), filePath, tree);
+        modifications.push({
+          startPosition: importNode.pos + 1,
+          endPosition: importNode.end + 1,
+          content: `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
+        });
       }
     }
-
-    rootNode.forEachChild(updatePaths);
-    return modifications;
-  } catch (e) {
-    return [];
   }
+
+  rootNode.forEachChild(updatePaths);
+  return modifications;
 }
 
 export function applyModificationsToFile(filePath: string, modifications: Modification[]): string {
@@ -80,5 +72,11 @@ function importsForeignModuleCode(
 }
 
 function getModulePathFromImport(importLiteral: string, filePath: string, tree: Tree): string {
-  return findModule(tree, convertToAbsolutPath(filePath, importLiteral));
+  try {
+    return findModule(tree, convertToAbsolutPath(filePath, importLiteral));
+  } catch (e) {
+    console.error(`Could not find a module for the import path ${importLiteral} in ${filePath}`);
+    console.error(`Please adjust the import path and rerun the schematics`);
+    process.exit();
+  }
 }

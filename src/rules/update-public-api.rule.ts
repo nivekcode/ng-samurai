@@ -2,8 +2,13 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 
 export function updatePublicAPI(path: string, newContent: string | Buffer): Rule {
   return (tree: Tree) => {
-    const publicAPIFile = path + '/public-api.ts';
-    tree.overwrite(publicAPIFile, newContent);
+    try {
+      const publicAPIFile = path + '/public-api.ts';
+      tree.overwrite(publicAPIFile, newContent);
+    } catch (e) {
+      // TODO use chalk here to make nice console formats
+      console.error(`Something went wrong: Do you have multiple modules in ${path}`);
+    }
   };
 }
 
