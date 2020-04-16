@@ -46,11 +46,10 @@ export function ngSamurai(_options: any): Rule {
         );
       }
     });
-    // T_ODO extract into a rule
     const publicAPIPaths = modulePaths.map((modulePath: string) =>
       convertModulePathToPublicAPIImport(modulePath)
     );
-    tree.overwrite(`${sourceRootPath}/public-api.ts`, generatePublicAPIcontent(publicAPIPaths));
+    rules.push(updatePublicAPI(sourceRootPath, generatePublicAPIcontent(publicAPIPaths)));
     return chain(rules);
   };
 }

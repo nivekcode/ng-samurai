@@ -1,15 +1,16 @@
 import * as fs from 'fs';
 import * as ts from 'typescript';
-import { Tree } from '@angular-devkit/schematics';
+import { Rule, Tree } from '@angular-devkit/schematics';
 import { findModule } from '@schematics/angular/utility/find-module';
+import { InsertChange } from '@schematics/angular/utility/change';
+
 import {
   convertModulePathToPublicAPIImport,
   convertToAbsolutPath,
   getFolderPath
 } from '../shared/pathHelper';
-import { InsertChange } from '@schematics/angular/utility/change';
 
-export function updateImportPaths(filePath: string) {
+export function updateImportPaths(filePath: string): Rule {
   const relativeFilePath = `.${filePath}`;
   return (host: Tree) => {
     let changes = getImportPathChanges(host, relativeFilePath);
