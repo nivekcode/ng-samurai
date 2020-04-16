@@ -10,10 +10,7 @@ import {
 } from '../shared/pathHelper';
 import { submodule } from '../submodule/index';
 import { generatePublicAPIcontent, updatePublicAPI } from '../rules/update-public-api.rule';
-import {
-  applyModificationsToFile,
-  getImportPathModifications
-} from '../rules/update-import-paths.rule';
+import { updateImportPaths } from '../rules/update-import-paths.rule';
 
 export function ngSamurai(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -25,7 +22,7 @@ export function ngSamurai(_options: any): Rule {
 
     tree.getDir(libRootPath).visit(filePath => {
       if (filePath.endsWith('.ts')) {
-        updateImportPathsIfNecessary(filePath, tree);
+        rules.push(updateImportPaths(filePath));
       }
 
       if (filePath.endsWith('module.ts')) {
@@ -49,21 +46,13 @@ export function ngSamurai(_options: any): Rule {
         );
       }
     });
+    // T_ODO extract into a rule
     const publicAPIPaths = modulePaths.map((modulePath: string) =>
       convertModulePathToPublicAPIImport(modulePath)
     );
     tree.overwrite(`${sourceRootPath}/public-api.ts`, generatePublicAPIcontent(publicAPIPaths));
     return chain(rules);
   };
-}
-
-function updateImportPathsIfNecessary(filePath: string, tree: Tree) {
-  const relativeFilePath = `.${filePath}`;
-  const importpathModificaitons = getImportPathModifications(tree, relativeFilePath);
-  if (importpathModificaitons.length > 0) {
-    const updatedSourceFile = applyModificationsToFile(relativeFilePath, importpathModificaitons);
-    tree.overwrite(filePath, updatedSourceFile);
-  }
 }
 
 function getRelativePathsToFilesInDirectory(tree: Tree, filePath: string) {

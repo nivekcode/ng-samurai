@@ -7,17 +7,29 @@ import {
   convertToAbsolutPath,
   getFolderPath
 } from '../shared/pathHelper';
+import { InsertChange } from '@schematics/angular/utility/change';
 
-export interface Modification {
-  startPosition: number;
-  endPosition: number;
-  content: string;
+export function updateImportPaths(filePath: string) {
+  const relativeFilePath = `.${filePath}`;
+  return (host: Tree) => {
+    let changes = getImportPathChanges(host, relativeFilePath);
+
+    const declarationRecorder = host.beginUpdate(relativeFilePath);
+    for (let change of changes) {
+      if (change instanceof InsertChange) {
+        declarationRecorder.insertLeft(change.pos, change.toAdd);
+      }
+    }
+    host.commitUpdate(declarationRecorder);
+    return host;
+  };
 }
 
-export function getImportPathModifications(tree: Tree, filePath: string): Modification[] {
+function getImportPathChanges(tree: Tree, filePath: string): InsertChange[] {
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
-  const modifications: Modification[] = [];
+  const modifications: InsertChange[] = [];
+  let order = 0;
   const moduleOfFile = findModule(tree, getFolderPath(filePath));
 
   function updatePaths(node: ts.Node) {
@@ -33,28 +45,18 @@ export function getImportPathModifications(tree: Tree, filePath: string): Modifi
         importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
       ) {
         const moduleFromImportPath = getModulePathFromImport(importNode.getText(), filePath, tree);
-        modifications.push({
-          startPosition: importNode.pos + 1,
-          endPosition: importNode.end + 1,
-          content: `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
-        });
+        modifications.push(
+          new InsertChange(
+            filePath,
+            importNode.pos + 1,
+            `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
+          )
+        );
       }
     }
   }
-
   rootNode.forEachChild(updatePaths);
   return modifications;
-}
-
-export function applyModificationsToFile(filePath: string, modifications: Modification[]): string {
-  let source = fs.readFileSync(filePath, 'utf-8');
-  for (const modification of modifications.reverse()) {
-    source =
-      source.slice(0, modification.startPosition) +
-      modification.content +
-      source.slice(modification.endPosition);
-  }
-  return source;
 }
 
 function isThirdPartyLibImport(importNode: ts.Node): boolean {
