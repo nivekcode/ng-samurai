@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as ts from 'typescript';
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { findModule } from '@schematics/angular/utility/find-module';
-import { InsertChange } from '@schematics/angular/utility/change';
 
 import {
   convertModulePathToPublicAPIImport,
@@ -10,26 +9,32 @@ import {
   getFolderPath
 } from '../shared/pathHelper';
 
+export interface Modification {
+  startPosition: number;
+  endPosition: number;
+  content: string;
+}
+
 export function updateImportPaths(filePath: string): Rule {
   const relativeFilePath = `.${filePath}`;
-  return (host: Tree) => {
-    let changes = getImportPathChanges(host, relativeFilePath);
-
-    const declarationRecorder = host.beginUpdate(relativeFilePath);
-    for (let change of changes) {
-      if (change instanceof InsertChange) {
-        declarationRecorder.insertLeft(change.pos, change.toAdd);
-      }
+  return (tree: Tree) => {
+    let modifications = getImportPathModifications(tree, relativeFilePath);
+    let source = fs.readFileSync(relativeFilePath, 'utf-8');
+    for (let modification of modifications.reverse()) {
+      source =
+        source.slice(0, modification.startPosition) +
+        modification.content +
+        source.slice(modification.endPosition);
     }
-    host.commitUpdate(declarationRecorder);
-    return host;
+    tree.overwrite(relativeFilePath, source);
+    return tree;
   };
 }
 
-function getImportPathChanges(tree: Tree, filePath: string): InsertChange[] {
+function getImportPathModifications(tree: Tree, filePath: string): Modification[] {
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
-  const modifications: InsertChange[] = [];
+  const modifications: Modification[] = [];
   let order = 0;
   const moduleOfFile = findModule(tree, getFolderPath(filePath));
 
@@ -46,13 +51,11 @@ function getImportPathChanges(tree: Tree, filePath: string): InsertChange[] {
         importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
       ) {
         const moduleFromImportPath = getModulePathFromImport(importNode.getText(), filePath, tree);
-        modifications.push(
-          new InsertChange(
-            filePath,
-            importNode.pos + 1,
-            `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
-          )
-        );
+        modifications.push({
+          startPosition: importNode.pos + 1,
+          endPosition: importNode.end + 1,
+          content: `'${convertModulePathToPublicAPIImport(moduleFromImportPath)}';`
+        });
       }
     }
   }
