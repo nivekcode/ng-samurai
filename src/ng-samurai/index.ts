@@ -1,17 +1,19 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-import { buildRelativePath } from '@schematics/angular/utility/find-module';
 
 import {
   convertModulePathToPublicAPIImport,
-  getFileDirectoryPath,
   getLibRootPath,
   getName,
   getSourceRootPath
 } from '../shared/pathHelper';
 import { submodule } from '../submodule/index';
-import { generatePublicAPIcontent, updatePublicAPI } from '../rules/update-public-api.rule';
 import { updateImportPaths } from '../rules/update-import-paths.rule';
 import { addTsconfigPaths } from '../rules/add-tsconfig-paths.rule';
+import {
+  generatePublicAPIcontent,
+  updatePublicAPI
+} from '../rules/update-public-api/update-public-api.rule';
+import { updateSubentryPublicAPI } from '../rules/update-public-api/update-subentry-public-api.rule';
 
 export function ngSamurai(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -27,7 +29,6 @@ export function ngSamurai(_options: any): Rule {
       }
 
       if (filePath.endsWith('module.ts')) {
-        const relativeFilePaths = getRelativePathsToFilesInDirectory(tree, filePath);
         modulePaths.push(filePath);
 
         rules.push(
@@ -39,12 +40,7 @@ export function ngSamurai(_options: any): Rule {
             generateModule: false
           })
         );
-        rules.push(
-          updatePublicAPI(
-            getFileDirectoryPath(filePath),
-            generatePublicAPIcontent(relativeFilePaths)
-          )
-        );
+        rules.push(updateSubentryPublicAPI(filePath));
       }
     });
     const publicAPIPaths = modulePaths.map((modulePath: string) =>
@@ -55,14 +51,4 @@ export function ngSamurai(_options: any): Rule {
 
     return chain(rules);
   };
-}
-
-function getRelativePathsToFilesInDirectory(tree: Tree, filePath: string) {
-  const relativeFilePaths: string[] = [];
-  tree.getDir(getFileDirectoryPath(filePath)).visit(file => {
-    if (file.endsWith('ts')) {
-      relativeFilePaths.push(buildRelativePath(filePath, file));
-    }
-  });
-  return relativeFilePaths;
 }
