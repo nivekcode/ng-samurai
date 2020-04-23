@@ -11,6 +11,7 @@ import {
 import { submodule } from '../submodule/index';
 import { generatePublicAPIcontent, updatePublicAPI } from '../rules/update-public-api.rule';
 import { updateImportPaths } from '../rules/update-import-paths.rule';
+import { addTsconfigPaths } from '../rules/add-tsconfig-paths.rule';
 
 export function ngSamurai(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -50,6 +51,8 @@ export function ngSamurai(_options: any): Rule {
       convertModulePathToPublicAPIImport(modulePath)
     );
     rules.push(updatePublicAPI(sourceRootPath, generatePublicAPIcontent(publicAPIPaths)));
+    rules.push(addTsconfigPaths());
+
     return chain(rules);
   };
 }
