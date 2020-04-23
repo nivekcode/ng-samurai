@@ -9,9 +9,7 @@ export function updateSubentryPublicAPI(filePath: string): Rule {
   return (tree: Tree) => {
     const directoryPath = getFileDirectoryPath(filePath);
     const relativeFilePaths = getRelativePathsToFilesInDirectory(tree, filePath);
-    // TODO refactor to update public API rule
-    const subentryPublicAPIContent = generatePublicAPIcontent(relativeFilePaths);
-    return updatePublicAPI(directoryPath, subentryPublicAPIContent);
+    return updatePublicAPI(directoryPath, relativeFilePaths);
   };
 }
 
