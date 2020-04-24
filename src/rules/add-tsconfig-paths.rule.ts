@@ -1,12 +1,12 @@
-import * as fs from 'fs';
 import { Rule, Tree } from '@angular-devkit/schematics';
-import { WorkspaceProject } from '@schematics/angular/utility/workspace-models';
+import { WorkspaceProject, WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 
 export function addTsconfigPaths(): Rule {
   return (tree: Tree) => {
     try {
-      const tsconfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf-8'));
-      const librayProjectNames = getLibraryProjectNames();
+      const tsconfig = JSON.parse(tree.read('tsconfig.json').toString());
+      const angularJSON = JSON.parse(tree.read('angular.json').toString());
+      const librayProjectNames = getLibraryProjectNames(angularJSON);
 
       if (!tsconfig.compilerOptions.paths) {
         tsconfig.compilerOptions.paths = {};
@@ -27,8 +27,7 @@ export function addTsconfigPaths(): Rule {
   };
 }
 
-function getLibraryProjectNames(): string[] {
-  const angularJSON = JSON.parse(fs.readFileSync('angular.json', 'utf-8'));
+function getLibraryProjectNames(angularJSON: WorkspaceSchema): string[] {
   return Object.values(angularJSON.projects)
     .filter((project: WorkspaceProject) => project.projectType === 'library')
     .map((project: WorkspaceProject) => project.root.split('/')[1]);

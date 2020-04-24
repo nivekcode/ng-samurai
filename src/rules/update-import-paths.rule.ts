@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as ts from 'typescript';
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { findModule } from '@schematics/angular/utility/find-module';
@@ -19,7 +18,7 @@ export function updateImportPaths(filePath: string): Rule {
   const relativeFilePath = `.${filePath}`;
   return (tree: Tree) => {
     let modifications = getImportPathModifications(tree, relativeFilePath);
-    let source = fs.readFileSync(relativeFilePath, 'utf-8');
+    let source = tree.read(relativeFilePath).toString();
     for (let modification of modifications.reverse()) {
       source =
         source.slice(0, modification.startPosition) +
@@ -32,7 +31,7 @@ export function updateImportPaths(filePath: string): Rule {
 }
 
 function getImportPathModifications(tree: Tree, filePath: string): Modification[] {
-  const sourceCode = fs.readFileSync(filePath, 'utf-8');
+  const sourceCode = tree.read(filePath).toString();
   const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
   const modifications: Modification[] = [];
   const modulePathFileBelongsTo = findModule(tree, getFolderPath(filePath));

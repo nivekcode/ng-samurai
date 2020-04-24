@@ -14,6 +14,10 @@ export function updatePublicAPI(path: string, paths: string[]): Rule {
 
 export function generatePublicAPIcontent(paths: string[]): string {
   let result = '';
-  paths.forEach((path: string) => (result += `export * from '${path.split('.ts')[0]}';\n`));
+  paths.forEach((path: string) => {
+    if (!path.includes('spec.ts')) {
+      result += `export * from '${path.split('.ts')[0]}';\n`;
+    }
+  });
   return result;
 }
