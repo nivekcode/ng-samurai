@@ -1,13 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
-import {
-  SchematicTestRunner,
-  UnitTestTree
-} from '@angular-devkit/schematics/testing';
-import {
-  Style,
-  Schema as ApplicationOptions
-} from '@schematics/angular/application/schema';
+import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import { Style, Schema as ApplicationOptions } from '@schematics/angular/application/schema';
 import { Schema as LibraryOptions } from '@schematics/angular/library/schema';
 import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
 
@@ -43,41 +37,23 @@ let appTree: UnitTestTree;
 describe('submodule', () => {
   beforeEach(async () => {
     appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'workspace',
-        workspaceOptions
-      )
+      .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
       .toPromise();
     appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'library',
-        libOptions,
-        appTree
-      )
+      .runExternalSchematicAsync('@schematics/angular', 'library', libOptions, appTree)
       .toPromise();
     appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'application',
-        appOptions,
-        appTree
-      )
+      .runExternalSchematicAsync('@schematics/angular', 'application', appOptions, appTree)
       .toPromise();
   });
 
   it('generates sub-module', async () => {
     const options = { ...defaultOptions };
 
-    const tree = await runner
-      .runSchematicAsync('submodule', options, appTree)
-      .toPromise();
+    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
 
     assert.strictEqual(
-      tree.files.includes(
-        '/projects/some-lib/src/lib/path/to/customer/customer.module.ts'
-      ),
+      tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts'),
       true
     );
     assert.strictEqual(
