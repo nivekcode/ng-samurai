@@ -3,7 +3,7 @@ import { buildRelativePath } from '@schematics/angular/utility/find-module';
 
 import { getFileDirectoryPath } from '../../shared/pathHelper';
 
-import { generatePublicAPIcontent, updatePublicAPI } from './update-public-api.rule';
+import { updatePublicAPI } from './update-public-api.rule';
 
 export function updateSubentryPublicAPI(filePath: string): Rule {
   return (tree: Tree) => {

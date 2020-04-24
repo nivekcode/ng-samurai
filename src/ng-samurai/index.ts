@@ -1,16 +1,15 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
-import { getLibRootPath, getName } from '../shared/pathHelper';
 import { submodule } from '../submodule/index';
-import { updateImportPaths } from '../rules/update-import-paths.rule';
+import { getLibRootPath, getModuleName } from '../shared/pathHelper';
 import { addTsconfigPaths } from '../rules/add-tsconfig-paths.rule';
+import { updateImportPaths } from '../rules/update-import-paths.rule';
 import { updateSubentryPublicAPI } from '../rules/update-public-api/update-subentry-public-api.rule';
 import { updateTopLevelPublicAPI } from '../rules/update-public-api/update-top-level-public-api.rule';
 
 export function ngSamurai(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const libRootPath = getLibRootPath(tree);
-
     const rules: Rule[] = [];
     const modulePaths: string[] = [];
 
@@ -24,7 +23,7 @@ export function ngSamurai(_options: any): Rule {
 
         rules.push(
           submodule({
-            name: getName(filePath),
+            name: getModuleName(filePath),
             filesPath: '../submodule/files',
             path: libRootPath,
             generateComponent: false,
