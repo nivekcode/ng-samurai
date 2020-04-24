@@ -5,7 +5,6 @@ import { WorkspaceProject } from '@schematics/angular/utility/workspace-models';
 export function addTsconfigPaths(): Rule {
   return (tree: Tree) => {
     try {
-      // TODO extract read into helper
       const tsconfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf-8'));
       const librayProjectNames = getLibraryProjectNames();
 

@@ -9,7 +9,7 @@ import {
   getFolderPath
 } from '../shared/pathHelper';
 
-export interface Modification {
+interface Modification {
   startPosition: number;
   endPosition: number;
   content: string;
@@ -35,8 +35,7 @@ function getImportPathModifications(tree: Tree, filePath: string): Modification[
   const sourceCode = fs.readFileSync(filePath, 'utf-8');
   const rootNode = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true);
   const modifications: Modification[] = [];
-  let order = 0;
-  const moduleOfFile = findModule(tree, getFolderPath(filePath));
+  const modulePathFileBelongsTo = findModule(tree, getFolderPath(filePath));
 
   function updatePaths(node: ts.Node) {
     if (ts.isImportDeclaration(node)) {
@@ -48,7 +47,7 @@ function getImportPathModifications(tree: Tree, filePath: string): Modification[
       if (
         importNode &&
         !isThirdPartyLibImport(importNode) &&
-        importsForeignModuleCode(importNode, moduleOfFile, filePath, tree)
+        importsForeignModuleCode(importNode, modulePathFileBelongsTo, filePath, tree)
       ) {
         const moduleFromImportPath = getModulePathFromImport(importNode.getText(), filePath, tree);
         modifications.push({
@@ -69,12 +68,14 @@ function isThirdPartyLibImport(importNode: ts.Node): boolean {
 
 function importsForeignModuleCode(
   importNode: ts.Node,
-  fileModulePath: string,
+  modulePathFileBelongsToPath: string,
   filePath: string,
   tree: Tree
 ): boolean {
   const importStringLiteral = importNode.getText();
-  return fileModulePath !== getModulePathFromImport(importStringLiteral, filePath, tree);
+  return (
+    modulePathFileBelongsToPath !== getModulePathFromImport(importStringLiteral, filePath, tree)
+  );
 }
 
 function getModulePathFromImport(importLiteral: string, filePath: string, tree: Tree): string {

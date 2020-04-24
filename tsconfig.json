@@ -22,7 +22,8 @@
     "target": "es6",
     "types": [
       "mocha",
-      "node"
+      "node",
+      "chai"
     ]
   },
   "include": [
