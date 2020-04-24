@@ -3,8 +3,8 @@ import { SchematicsException, Tree } from '@angular-devkit/schematics';
 export const getFileDirectoryPath = (filePath: string) =>
   filePath.substring(0, filePath.lastIndexOf('/'));
 
-export function getName(filePath: string): string {
-  const pathSegments = filePath.split('/');
+export function getModuleName(moduleFilePath: string): string {
+  const pathSegments = moduleFilePath.split('/');
   // the name is always the second last pathSegment
   return pathSegments[pathSegments.length - 2];
 }
@@ -26,7 +26,7 @@ export function getSourceRootPath(tree: Tree, projectName?: string): string {
 
   if (project.projectType === 'application') {
     throw new SchematicsException(
-      'The "submodule" schematics works only for the "library" projects, please specify correct project using --project flag'
+      'Ng-samurai works only for the "library" projects, please specify correct project using --project flag'
     );
   }
   return project.sourceRoot;
