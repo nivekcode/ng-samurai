@@ -15,17 +15,16 @@ interface Modification {
 }
 
 export function updateImportPaths(filePath: string): Rule {
-  const relativeFilePath = `.${filePath}`;
   return (tree: Tree) => {
-    let modifications = getImportPathModifications(tree, relativeFilePath);
-    let source = tree.read(relativeFilePath).toString();
+    let modifications = getImportPathModifications(tree, filePath);
+    let source = tree.read(filePath).toString();
     for (let modification of modifications.reverse()) {
       source =
         source.slice(0, modification.startPosition) +
         modification.content +
         source.slice(modification.endPosition);
     }
-    tree.overwrite(relativeFilePath, source);
+    tree.overwrite(filePath, source);
     return tree;
   };
 }

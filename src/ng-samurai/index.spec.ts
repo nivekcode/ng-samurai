@@ -98,7 +98,7 @@ describe('ng-samurai', () => {
     expect(true).to.be.true;
   });
 
-  describe('public_api', () => {
+  describe('public_api of the subentry', () => {
     function expectedPublicAPIContent(fileNames: string[]): string {
       let result = '';
       fileNames.forEach((fileName: string) => {
@@ -117,36 +117,65 @@ describe('ng-samurai', () => {
       expect(tree.exists('/projects/some-lib/src/lib/bar/public-api.ts')).to.be.true;
     });
 
-    it('should add a public_api to baz module', async () => {
+    it('should not add a public_api to baz module', async () => {
       const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
-      expect(tree.exists('/projects/some-lib/src/lib/baz/public-api.ts')).to.be.true;
+      expect(tree.exists('/projects/some-lib/src/lib/bar/baz/public-api.ts')).not.to.be.true;
     });
 
     it('should export foo.component.ts and foo.module.ts from foos public-api', async () => {
       const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
       const publicAPI = tree.read('/projects/some-lib/src/lib/foo/public-api.ts').toString();
-      const expectedFilesIncludedInPublicAPI = ['foo.module', 'foo.component'];
+      const expectedFilesIncludedInPublicAPI = ['foo.module', 'foo.component', 'foo.service'];
       const expectedFileContent = expectedPublicAPIContent(expectedFilesIncludedInPublicAPI);
 
       expect(publicAPI).to.equal(expectedFileContent);
     });
 
-    it('should export bar.component.ts and bar.module.ts from bars public-api', async () => {
+    it('should export bar.component.ts, bar.module.ts, bar.model and baz.component.ts from bars public-api', async () => {
       const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
       const publicAPI = tree.read('/projects/some-lib/src/lib/bar/public-api.ts').toString();
-      const expectedFilesIncludedInPublicAPI = ['bar.module', 'bar.component'];
-      const expectedFileContent = expectedPublicAPIContent(expectedFilesIncludedInPublicAPI);
-
-      expect(publicAPI).to.equal(expectedFileContent);
-    });
-
-    it('should export baz.component.ts and baz.module.ts from bars public-api', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
-      const publicAPI = tree.read('/projects/some-lib/src/lib/baz/public-api.ts').toString();
-      const expectedFilesIncludedInPublicAPI = ['baz.module', 'baz.component'];
+      const expectedFilesIncludedInPublicAPI = [
+        'bar.module',
+        'bar.component',
+        'bar.model',
+        'baz/baz.component'
+      ];
       const expectedFileContent = expectedPublicAPIContent(expectedFilesIncludedInPublicAPI);
 
       expect(publicAPI).to.equal(expectedFileContent);
     });
   });
+
+  describe('index.ts', () => {
+    it('should add an index.ts to foo module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/foo/index.ts')).to.be.true;
+    });
+
+    it('should add export everything from public-api inside the index.ts of foo', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.read('/projects/some-lib/src/lib/foo/index.ts').toString()).to.equal(
+        "export * from './public-api';\n"
+      );
+    });
+
+    it('should add an index.ts bar module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/bar/index.ts')).to.be.true;
+    });
+
+    it('should add export everything from public-api inside the index.ts of bar', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.read('/projects/some-lib/src/lib/bar/index.ts').toString()).to.equal(
+        "export * from './public-api';\n"
+      );
+    });
+
+    it('should not add an index.ts to baz module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/bar/baz/index.ts')).not.to.be.true;
+    });
+  });
+
+  describe('package.json', () => {});
 });
