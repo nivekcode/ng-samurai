@@ -177,5 +177,52 @@ describe('ng-samurai', () => {
     });
   });
 
-  describe('package.json', () => {});
+  describe('package.json', () => {
+    it('should add an index.ts to foo module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/foo/package.json')).to.be.true;
+    });
+
+    it('should add the correct config to the package.json of foo subentry', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const expectedSubentryConfig = {
+        ngPackage: {
+          lib: {
+            entryFile: 'public-api.ts'
+          }
+        }
+      };
+      const subEntryConfig = JSON.parse(
+        tree.read('/projects/some-lib/src/lib/foo/package.json').toString()
+      );
+      expect(subEntryConfig).to.eql(expectedSubentryConfig);
+    });
+
+    it('should add an packag.json to bar module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/bar/package.json')).to.be.true;
+    });
+
+    it('should add the correct config to the package.json of bar subentry', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const expectedSubentryConfig = {
+        ngPackage: {
+          lib: {
+            entryFile: 'public-api.ts'
+          }
+        }
+      };
+      const subEntryConfig = JSON.parse(
+        tree.read('/projects/some-lib/src/lib/bar/package.json').toString()
+      );
+      expect(subEntryConfig).to.eql(expectedSubentryConfig);
+    });
+
+    it('should not add a package.json to baz module', async () => {
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      expect(tree.exists('/projects/some-lib/src/lib/bar/baz/package.json')).not.to.be.true;
+    });
+  });
+
+  describe('paths', () => {});
 });
