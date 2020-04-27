@@ -225,32 +225,62 @@ describe('ng-samurai', () => {
   });
 
   describe('paths', () => {
-    function updateBarModuleFileContent() {
+    function updateBarModuleContent() {
       const barModuleFilePath = '/projects/some-lib/src/lib/bar/bar.module.ts';
       const importStatementToAdd = `import {FooModule} from '../foo/foo.module.ts';`;
       const barModuleFileContent = appTree.readContent(barModuleFilePath);
       appTree.overwrite(barModuleFilePath, `${importStatementToAdd}\n${barModuleFileContent}`);
     }
 
-    function getExpectedBarModuleFilecontent() {
+    function getExpectedBarModuleContent() {
       const barModuleFilePath = '/projects/some-lib/src/lib/bar/bar.module.ts';
       const expectedChangedImportPath = `import {FooModule} from 'some-lib/src/lib/foo';`;
       const barModuleFileContent = appTree.readContent(barModuleFilePath);
       return `${expectedChangedImportPath}\n${barModuleFileContent}`;
     }
 
+    function updateBazComponentContent() {
+      const bazComponentFilePath = '/projects/some-lib/src/lib/bar/baz/baz.component.ts';
+      const importStatementToAdd = `import {BarModel} from '../bar/bar.model.ts';`;
+      const bazComponentFileContent = appTree.readContent(bazComponentFilePath);
+      appTree.overwrite(
+        bazComponentFilePath,
+        `${importStatementToAdd}\n${bazComponentFileContent}`
+      );
+    }
+
+    function getExpectedBazComponentContent() {
+      const bazComponentFilePath = '/projects/some-lib/src/lib/bar/baz/baz.component.ts';
+      const importStatementToAdd = `import {BarModel} from '../bar/bar.model.ts';`;
+      const bazComponentFileContent = appTree.readContent(bazComponentFilePath);
+      return `${importStatementToAdd}\n${bazComponentFileContent}`;
+    }
+
     it(`should adjust the paths to other modules but not the third pary imports and not the imports from 
       the same folder`, async () => {
       // needs to be called before we update the module file content
-      const expectedModuleContent = getExpectedBarModuleFilecontent();
-      updateBarModuleFileContent();
+      const expectedModuleContent = getExpectedBarModuleContent();
+      updateBarModuleContent();
 
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
-      const moduleContentAfterSchematics = appTree.readContent(
+      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const moduleContentAfterSchematics = updatedTree.readContent(
         '/projects/some-lib/src/lib/bar/bar.module.ts'
       );
 
       expect(moduleContentAfterSchematics).to.equal(expectedModuleContent);
+    });
+
+    it('should not update the baz components content since the import paths do not need to be updated', async () => {
+      // needs to be called before we update the module file content
+      const expectedComponentContent = getExpectedBazComponentContent();
+      updateBazComponentContent();
+
+      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const componentContentAfterSchematics = updatedTree.readContent(
+        '/projects/some-lib/src/lib/bar/baz/baz.component.ts'
+      );
+
+      expect(componentContentAfterSchematics).to.equal(expectedComponentContent);
     });
   });
 });
