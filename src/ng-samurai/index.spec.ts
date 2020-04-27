@@ -224,5 +224,33 @@ describe('ng-samurai', () => {
     });
   });
 
-  describe('paths', () => {});
+  describe('paths', () => {
+    function updateBarModuleFileContent() {
+      const barModuleFilePath = '/projects/some-lib/src/lib/bar/bar.module.ts';
+      const importStatementToAdd = `import {FooModule} from '../foo/foo.module.ts';`;
+      const barModuleFileContent = appTree.readContent(barModuleFilePath);
+      appTree.overwrite(barModuleFilePath, `${importStatementToAdd}\n${barModuleFileContent}`);
+    }
+
+    function getExpectedBarModuleFilecontent() {
+      const barModuleFilePath = '/projects/some-lib/src/lib/bar/bar.module.ts';
+      const expectedChangedImportPath = `import {FooModule} from 'some-lib/src/lib/foo';`;
+      const barModuleFileContent = appTree.readContent(barModuleFilePath);
+      return `${expectedChangedImportPath}\n${barModuleFileContent}`;
+    }
+
+    it(`should adjust the paths to other modules but not the third pary imports and not the imports from 
+      the same folder`, async () => {
+      // needs to be called before we update the module file content
+      const expectedModuleContent = getExpectedBarModuleFilecontent();
+      updateBarModuleFileContent();
+
+      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const moduleContentAfterSchematics = appTree.readContent(
+        '/projects/some-lib/src/lib/bar/bar.module.ts'
+      );
+
+      expect(moduleContentAfterSchematics).to.equal(expectedModuleContent);
+    });
+  });
 });
