@@ -7,6 +7,7 @@ import {
   convertToAbsolutPath,
   getFolderPath
 } from '../shared/pathHelper';
+import { logError } from '../shared/log-helper';
 
 interface Modification {
   startPosition: number;
@@ -80,8 +81,8 @@ function getModulePathFromImport(importLiteral: string, filePath: string, tree: 
   try {
     return findModule(tree, convertToAbsolutPath(filePath, importLiteral));
   } catch (e) {
-    console.error(`Could not find a module for the import path ${importLiteral} in ${filePath}`);
-    console.error(`Please adjust the import path and rerun the schematics`);
+    logError(`Could not find a module for the import path ${importLiteral} in ${filePath}. 
+    Please adjust the import path and rerun the schematics`);
     process.exit();
   }
 }

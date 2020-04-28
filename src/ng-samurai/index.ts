@@ -6,8 +6,11 @@ import { addTsconfigPaths } from '../rules/add-tsconfig-paths.rule';
 import { updateImportPaths } from '../rules/update-import-paths.rule';
 import { updateSubentryPublicAPI } from '../rules/update-public-api/update-subentry-public-api.rule';
 import { updateTopLevelPublicAPI } from '../rules/update-public-api/update-top-level-public-api.rule';
+import { logWelcomeMessage } from '../shared/log-helper';
 
 export function ngSamurai(_options: any): Rule {
+  logWelcomeMessage();
+
   return (tree: Tree, _context: SchematicContext) => {
     const libRootPath = getLibRootPath(tree);
     const rules: Rule[] = [];

@@ -1,4 +1,5 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
+import { logError } from '../../shared/log-helper';
 
 export function updatePublicAPI(path: string, paths: string[]): Rule {
   return (tree: Tree) => {
@@ -6,8 +7,7 @@ export function updatePublicAPI(path: string, paths: string[]): Rule {
       const publicAPIFile = path + '/public-api.ts';
       tree.overwrite(publicAPIFile, generatePublicAPIcontent(paths));
     } catch (e) {
-      // TODO use chalk here to make nice console formats
-      console.error(`Something went wrong: Do you have multiple modules in ${path}`);
+      logError(`Something went wrong: Do you have multiple modules in ${path}`);
     }
   };
 }

@@ -1,5 +1,6 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { WorkspaceProject, WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
+import { logError } from '../shared/log-helper';
 
 export function addTsconfigPaths(): Rule {
   return (tree: Tree) => {
@@ -21,8 +22,9 @@ export function addTsconfigPaths(): Rule {
 
       tree.overwrite('tsconfig.json', JSON.stringify(tsconfig, null, 2));
     } catch (e) {
-      console.log('Something went wrong while ng-samurai tried to update your tsconfig.json');
-      console.error(e);
+      logError(
+        `Something went wrong while ng-samurai tried to update your tsconfig.json, ${e.toString()}`
+      );
     }
   };
 }
