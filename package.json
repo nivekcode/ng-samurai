@@ -10,10 +10,15 @@
     "test": "mocha src/**/*.spec.ts --require ts-node/register",
     "test:watch": "mocha src/**/*.spec.ts --require ts-node/register --watch-extensions ts --watch"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "keywords": [
     "schematics"
   ],
-  "author": "",
+  "author": "Kevin Kreuzer",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
@@ -29,8 +34,10 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^8.10.59",
     "chai": "^4.2.0",
+    "husky": "^4.2.5",
     "mocha": "^7.0.0",
     "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "ts-node": "^8.6.2"
   }
 }
