@@ -28,18 +28,17 @@
         "$source": "projectName"
       }
     },
-
     "generateComponent": {
       "alias": "gc",
       "type": "boolean",
       "description": "Should a default component be generated for a sub-module? (If yes, module will always be generated too)",
-      "default": false
+      "default": true
     },
     "generateModule": {
       "alias": "gm",
       "type": "boolean",
       "description": "Should a default module be generated for a sub-module?",
-      "default": false
+      "default": true
     },
 
     "style": {

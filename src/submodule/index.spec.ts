@@ -1,5 +1,5 @@
-import * as assert from 'assert';
 import * as path from 'path';
+import { expect } from 'chai';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { Style, Schema as ApplicationOptions } from '@schematics/angular/application/schema';
 import { Schema as LibraryOptions } from '@schematics/angular/library/schema';
@@ -47,21 +47,63 @@ describe('submodule', () => {
       .toPromise();
   });
 
-  it('generates sub-module', async () => {
+  it('should generate a CustomerComponent', async () => {
     const options = { ...defaultOptions };
 
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
 
-    assert.strictEqual(
-      tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts'),
-      true
-    );
-    assert.strictEqual(
+    expect(tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.component.ts'))
+      .to.be.true;
+  });
+
+  it('should generate a CustomerModule and add a CustomerComponent', async () => {
+    const options = { ...defaultOptions };
+
+    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+
+    expect(tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')).to
+      .be.true;
+    expect(
       tree
-        .read('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')!
-        .toString()
-        .includes('CustomerComponent'),
-      true
+        .readContent('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')
+        .includes('CustomerComponent')
+    ).to.be.true;
+  });
+
+  it('should export everything from public-api inside index.ts', async () => {
+    const options = { ...defaultOptions };
+    const expectedContent = "export * from './public-api';\n";
+
+    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/index.ts')).to.equal(
+      expectedContent
     );
+  });
+
+  it('should export the CustomerComponent and the CustomerModule from public-api', async () => {
+    const options = { ...defaultOptions };
+    const expectedContent =
+      "export * from './customer.module';\nexport * from './customer.component';\n";
+
+    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/public-api.ts')).to.equal(
+      expectedContent
+    );
+  });
+
+  it('should add a package.json with the subentry config', async () => {
+    const options = { ...defaultOptions };
+    const expectedContent = {
+      ngPackage: {
+        lib: {
+          entryFile: 'public-api.ts'
+        }
+      }
+    };
+
+    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    expect(
+      JSON.parse(tree.readContent('/projects/some-lib/src/lib/path/to/customer/package.json'))
+    ).to.eql(expectedContent);
   });
 });

@@ -23,6 +23,8 @@ let appTree: UnitTestTree;
 
 describe('ng-samurai', () => {
   beforeEach(async () => {
+    console.log = () => {};
+
     appTree = await runner
       .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
       .toPromise();
@@ -92,11 +94,6 @@ describe('ng-samurai', () => {
     appTree.delete('/projects/some-lib/src/lib/some-lib.service.ts');
     appTree.delete('/projects/some-lib/src/lib/some-lib.service.spec.ts');
   }
-
-  it('should print it', async () => {
-    console.log('tree', appTree.files);
-    expect(true).to.be.true;
-  });
 
   describe('public-api', () => {
     describe('public-api top level', () => {
@@ -324,7 +321,7 @@ describe('ng-samurai', () => {
       const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
       const tsconfigContent = JSON.parse(updatedTree.readContent('tsconfig.json'));
       const expectedPaths = {
-        'some-lib': ['dist/some-lib'],
+        'some-lib': ['dist/some-lib/some-lib', 'dist/some-lib'],
         'some-lib/*': ['projects/some-lib/*', 'projects/some-lib']
       };
 
