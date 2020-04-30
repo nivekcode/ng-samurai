@@ -7,8 +7,8 @@
     "build:watch": "tsc -p tsconfig.json --watch",
     "format": "prettier src/**/*.{ts,json,md} --write",
     "format:test": "prettier src/**/*.{ts,json,md} --list-different",
-    "test": "mocha src/**/*.spec.ts --require ts-node/register --async-only",
-    "test:watch": "mocha src/**/*.spec.ts --require ts-node/register --watch-extensions ts --watch"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "husky": {
     "hooks": {
@@ -30,16 +30,15 @@
     "typescript": "^3.8.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.11",
-    "@types/mocha": "^5.2.7",
+    "@types/jest": "^25.2.1",
     "@types/node": "^8.10.59",
-    "chai": "^4.2.0",
     "husky": "^4.2.5",
-    "mocha": "^7.0.0",
+    "jest": "^25.5.2",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
-    "ts-node": "^8.6.2",
-    "semantic-release": "^17.0.7"
+    "semantic-release": "^17.0.7",
+    "ts-jest": "^25.4.0",
+    "ts-node": "^8.6.2"
   },
   "repository": {
     "type": "git",

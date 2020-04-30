@@ -1,5 +1,4 @@
 import * as path from 'path';
-import { expect } from 'chai';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { Style, Schema as ApplicationOptions } from '@schematics/angular/application/schema';
 import { Schema as LibraryOptions } from '@schematics/angular/library/schema';
@@ -52,8 +51,9 @@ describe('submodule', () => {
 
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
 
-    expect(tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.component.ts'))
-      .to.be.true;
+    expect(
+      tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.component.ts')
+    ).toBe(true);
   });
 
   it('should generate a CustomerModule and add a CustomerComponent', async () => {
@@ -61,13 +61,14 @@ describe('submodule', () => {
 
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
 
-    expect(tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')).to
-      .be.true;
+    expect(
+      tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')
+    ).toBe(true);
     expect(
       tree
         .readContent('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')
         .includes('CustomerComponent')
-    ).to.be.true;
+    ).toBe(true);
   });
 
   it('should export everything from public-api inside index.ts', async () => {
@@ -75,7 +76,7 @@ describe('submodule', () => {
     const expectedContent = "export * from './public-api';\n";
 
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
-    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/index.ts')).to.equal(
+    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/index.ts')).toEqual(
       expectedContent
     );
   });
@@ -86,7 +87,7 @@ describe('submodule', () => {
       "export * from './customer.module';\nexport * from './customer.component';\n";
 
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
-    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/public-api.ts')).to.equal(
+    expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/public-api.ts')).toEqual(
       expectedContent
     );
   });
@@ -104,6 +105,6 @@ describe('submodule', () => {
     const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
     expect(
       JSON.parse(tree.readContent('/projects/some-lib/src/lib/path/to/customer/package.json'))
-    ).to.eql(expectedContent);
+    ).toEqual(expectedContent);
   });
 });
