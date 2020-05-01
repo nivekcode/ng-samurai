@@ -1,19 +1,12 @@
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
 import { generateSubentry } from '../subentry/index';
-import {
-  convertToAbsolutPath,
-  getFileDirectoryPath,
-  getFolderPath,
-  getLibRootPath,
-  getModuleName
-} from '../shared/pathHelper';
+import { getFolderPath, getLibRootPath, getModuleName, resolvePath } from '../shared/path-helper';
 import { addTsconfigPaths } from '../rules/add-tsconfig-paths.rule';
 import { updateImportPaths } from '../rules/update-import-paths.rule';
 import { updateSubentryPublicAPI } from '../rules/update-public-api/update-subentry-public-api.rule';
 import { updateTopLevelPublicAPI } from '../rules/update-public-api/update-top-level-public-api.rule';
 import { logWelcomeMessage } from '../shared/log-helper';
-import { resolvePath } from '../shared/path-helper';
 
 export function splitLib(_options: any): Rule {
   logWelcomeMessage();
