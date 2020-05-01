@@ -7,6 +7,7 @@ export function updatePublicAPI(path: string, paths: string[]): Rule {
       const publicAPIFile = path + '/public-api.ts';
       tree.overwrite(publicAPIFile, generatePublicAPIcontent(paths));
     } catch (e) {
+      console.error(e);
       logError(`Something went wrong: Do you have multiple modules in ${path}`);
     }
   };

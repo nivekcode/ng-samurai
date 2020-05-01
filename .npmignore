@@ -1,3 +1,15 @@
 # Ignores TypeScript files, but keeps definitions.
 !*.d.ts
-*.ts
+
+*.ts(!**/files/**/*.{ts,json})
+
+.idea
+
+!package.json
+jest.config.js
+coverage/
+tsconfig.json
+tslint.json
+.travis.yml
+.prettierrc
+.prettierignore
