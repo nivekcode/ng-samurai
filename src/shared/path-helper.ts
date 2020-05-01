@@ -50,6 +50,12 @@ export function convertToAbsolutPath(filePath: string, importStringLiteral: stri
   return `${folderPathAfterLevelsMove}${pathAfterRelativeSegment}`;
 }
 
+export function resolvePath(filePath: string, pathChange: string): string {
+  const levelsUp = getLevels(pathChange);
+  const filePathSegments = filePath.split('/');
+  return filePathSegments.slice(0, filePathSegments.length - levelsUp).join('/');
+}
+
 function getLevels(importStringLiteral: string): number {
   const numberOfDots = importStringLiteral.match(/[^a-zA-Z0-9]*/)[0].match(/\./g)?.length;
   return Math.floor(numberOfDots / 2);
