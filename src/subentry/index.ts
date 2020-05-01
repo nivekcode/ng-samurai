@@ -14,9 +14,9 @@ import {
 import { strings } from '@angular-devkit/core';
 import { parseName } from '@schematics/angular/utility/parse-name';
 
-import { Schema as SubmoduleOptions } from './schema.model';
+import { Schema as SubentryOptions } from './schema.model';
 
-export function submodule(_options: SubmoduleOptions): Rule {
+export function generateSubentry(_options: SubentryOptions): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const moduleSchematicsOptions = { ..._options };
     const componentSchematicsOptions = { ..._options };
@@ -33,7 +33,7 @@ export function submodule(_options: SubmoduleOptions): Rule {
 
     if (project.projectType === 'application') {
       throw new SchematicsException(
-        'The "submodule" schematics works only for the "library" projects, please specify correct project using --project flag'
+        'The "generateSubentry" schematics works only for the "library" projects, please specify correct project using --project flag'
       );
     }
 

@@ -33,7 +33,7 @@ const runner = new SchematicTestRunner('schematics', collectionPath);
 
 let appTree: UnitTestTree;
 
-describe('submodule', () => {
+describe('subentry', () => {
   beforeEach(async () => {
     appTree = await runner
       .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
@@ -49,7 +49,7 @@ describe('submodule', () => {
   it('should generate a CustomerComponent', async () => {
     const options = { ...defaultOptions };
 
-    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    const tree = await runner.runSchematicAsync('subentry', options, appTree).toPromise();
 
     expect(
       tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.component.ts')
@@ -59,7 +59,7 @@ describe('submodule', () => {
   it('should generate a CustomerModule and add a CustomerComponent', async () => {
     const options = { ...defaultOptions };
 
-    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    const tree = await runner.runSchematicAsync('subentry', options, appTree).toPromise();
 
     expect(
       tree.files.includes('/projects/some-lib/src/lib/path/to/customer/customer.module.ts')
@@ -75,7 +75,7 @@ describe('submodule', () => {
     const options = { ...defaultOptions };
     const expectedContent = "export * from './public-api';\n";
 
-    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    const tree = await runner.runSchematicAsync('subentry', options, appTree).toPromise();
     expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/index.ts')).toEqual(
       expectedContent
     );
@@ -86,7 +86,7 @@ describe('submodule', () => {
     const expectedContent =
       "export * from './customer.module';\nexport * from './customer.component';\n";
 
-    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    const tree = await runner.runSchematicAsync('subentry', options, appTree).toPromise();
     expect(tree.readContent('/projects/some-lib/src/lib/path/to/customer/public-api.ts')).toEqual(
       expectedContent
     );
@@ -102,7 +102,7 @@ describe('submodule', () => {
       }
     };
 
-    const tree = await runner.runSchematicAsync('submodule', options, appTree).toPromise();
+    const tree = await runner.runSchematicAsync('subentry', options, appTree).toPromise();
     expect(
       JSON.parse(tree.readContent('/projects/some-lib/src/lib/path/to/customer/package.json'))
     ).toEqual(expectedContent);

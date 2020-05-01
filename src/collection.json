@@ -1,14 +1,14 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "ng-samurai": {
-      "description": "A blank schematic.",
-      "factory": "./ng-samurai/index#ngSamurai"
+    "split-lib": {
+      "description": "Automatically split your library into multiple chungks",
+      "factory": "./library-split/index#splitLib"
     },
-    "submodule": {
-      "description": "A schematic to generate tree-shakeable sub-module in Angular library (ng-packagr secondary entry  point).",
-      "factory": "./submodule/index#submodule",
-      "schema": "./submodule/schema.json"
+    "generate-subentry": {
+      "description": "A schematic to generate tree-shakeable sub-entry in Angular library (ng-packagr secondary entry  point).",
+      "factory": "./subentry/index#generateSubentry",
+      "schema": "./subentry/schema.json"
     }
   }
 }
