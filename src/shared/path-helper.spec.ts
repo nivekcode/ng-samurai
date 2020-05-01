@@ -6,7 +6,7 @@ import {
   getLibRootPath,
   getModuleName,
   getSourceRootPath
-} from './pathHelper';
+} from './path-helper';
 
 describe('path-helper', () => {
   it('should get the directory of a filepath', () => {

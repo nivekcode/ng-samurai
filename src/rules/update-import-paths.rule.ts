@@ -6,7 +6,7 @@ import {
   convertModulePathToPublicAPIImport,
   convertToAbsolutPath,
   getFolderPath
-} from '../shared/pathHelper';
+} from '../shared/path-helper';
 import { logError } from '../shared/log-helper';
 
 interface Modification {

@@ -1,6 +1,6 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
 
-import { convertModulePathToPublicAPIImport, getSourceRootPath } from '../../shared/pathHelper';
+import { convertModulePathToPublicAPIImport, getSourceRootPath } from '../../shared/path-helper';
 
 import { updatePublicAPI } from './update-public-api.rule';
 
