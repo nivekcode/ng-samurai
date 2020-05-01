@@ -20,7 +20,7 @@ const collectionPath = path.join(__dirname, '../collection.json');
 const runner = new SchematicTestRunner('schematics', collectionPath);
 let appTree: UnitTestTree;
 
-describe('ng-samurai', () => {
+describe('split', () => {
   beforeEach(async () => {
     console.log = () => {};
 
@@ -101,7 +101,7 @@ describe('ng-samurai', () => {
       }
 
       it('should export foo and bar from the public-api', async () => {
-        const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const updatedTree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         const topLevelPublicAPIContent = updatedTree.readContent(
           '/projects/some-lib/src/public-api.ts'
         );
@@ -124,22 +124,22 @@ describe('ng-samurai', () => {
       }
 
       it('should add a public_api to foo module', async () => {
-        const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         expect(tree.exists('/projects/some-lib/src/lib/foo/public-api.ts')).toBe(true);
       });
 
       it('should add a public_api to bar module', async () => {
-        const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         expect(tree.exists('/projects/some-lib/src/lib/bar/public-api.ts')).toBe(true);
       });
 
       it('should not add a public_api to baz module', async () => {
-        const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         expect(tree.exists('/projects/some-lib/src/lib/bar/baz/public-api.ts')).not.toBe(true);
       });
 
       it('should export foo.component.ts and foo.module.ts from foos public-api', async () => {
-        const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         const publicAPI = tree.read('/projects/some-lib/src/lib/foo/public-api.ts').toString();
         const expectedFilesIncludedInPublicAPI = ['foo.module', 'foo.component', 'foo.service'];
         const expectedFileContent = expectedSubentryPublicAPIContent(
@@ -150,7 +150,7 @@ describe('ng-samurai', () => {
       });
 
       it('should export bar.component.ts, bar.module.ts, bar.model and baz.component.ts from bars public-api', async () => {
-        const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+        const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
         const publicAPI = tree.read('/projects/some-lib/src/lib/bar/public-api.ts').toString();
         const expectedFilesIncludedInPublicAPI = [
           'bar.module',
@@ -169,43 +169,43 @@ describe('ng-samurai', () => {
 
   describe('index.ts', () => {
     it('should add an index.ts to foo module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/foo/index.ts')).toBe(true);
     });
 
     it('should add export everything from public-api inside the index.ts of foo', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.read('/projects/some-lib/src/lib/foo/index.ts').toString()).toEqual(
         "export * from './public-api';\n"
       );
     });
 
     it('should add an index.ts bar module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/bar/index.ts')).toBe(true);
     });
 
     it('should add export everything from public-api inside the index.ts of bar', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.read('/projects/some-lib/src/lib/bar/index.ts').toString()).toEqual(
         "export * from './public-api';\n"
       );
     });
 
     it('should not add an index.ts to baz module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/bar/baz/index.ts')).not.toBe(true);
     });
   });
 
   describe('package.json', () => {
     it('should add an index.ts to foo module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/foo/package.json')).toBe(true);
     });
 
     it('should add the correct config to the package.json of foo subentry', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const expectedSubentryConfig = {
         ngPackage: {
           lib: {
@@ -220,12 +220,12 @@ describe('ng-samurai', () => {
     });
 
     it('should add an packag.json to bar module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/bar/package.json')).toBe(true);
     });
 
     it('should add the correct config to the package.json of bar subentry', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const expectedSubentryConfig = {
         ngPackage: {
           lib: {
@@ -240,7 +240,7 @@ describe('ng-samurai', () => {
     });
 
     it('should not add a package.json to baz module', async () => {
-      const tree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const tree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       expect(tree.exists('/projects/some-lib/src/lib/bar/baz/package.json')).not.toBe(true);
     });
   });
@@ -283,7 +283,7 @@ describe('ng-samurai', () => {
       const expectedModuleContent = getExpectedBarModuleContent();
       updateBarModuleContent();
 
-      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const updatedTree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const moduleContentAfterSchematics = updatedTree.readContent(
         '/projects/some-lib/src/lib/bar/bar.module.ts'
       );
@@ -296,7 +296,7 @@ describe('ng-samurai', () => {
       const expectedComponentContent = getExpectedBazComponentContent();
       updateBazComponentContent();
 
-      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const updatedTree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const componentContentAfterSchematics = updatedTree.readContent(
         '/projects/some-lib/src/lib/bar/baz/baz.component.ts'
       );
@@ -313,7 +313,7 @@ describe('ng-samurai', () => {
     }
 
     it('should update the paths in the tsconfig.json', async () => {
-      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const updatedTree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const tsconfigContent = JSON.parse(updatedTree.readContent('tsconfig.json'));
       const expectedPaths = {
         'some-lib': ['dist/some-lib/some-lib', 'dist/some-lib'],
@@ -326,7 +326,7 @@ describe('ng-samurai', () => {
 
     it('should add paths to the tsconfig.json even if no path exist', async () => {
       deletePathsFromTsconfig();
-      const updatedTree = await runner.runSchematicAsync('ng-samurai', {}, appTree).toPromise();
+      const updatedTree = await runner.runSchematicAsync('split-lib', {}, appTree).toPromise();
       const tsconfigContent = JSON.parse(updatedTree.readContent('tsconfig.json'));
       const expectedPaths = {
         'some-lib/*': ['projects/some-lib/*', 'projects/some-lib']

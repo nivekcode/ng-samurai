@@ -1,7 +1,7 @@
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { buildRelativePath } from '@schematics/angular/utility/find-module';
 
-import { getFileDirectoryPath } from '../../shared/pathHelper';
+import { getFileDirectoryPath } from '../../shared/path-helper';
 
 import { updatePublicAPI } from './update-public-api.rule';
 

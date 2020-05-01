@@ -25,8 +25,5 @@ export function logWelcomeMessage() {
 }
 
 export function logError(error: string) {
-  console.log(boxen(`${chalk.blue('Ng-samurai: ')} ${chalk.red(error)}`), {
-    padding: 2,
-    borderColor: 'red'
-  });
+  console.log(`${chalk.blue('Ng-samurai: ')} ${chalk.red(error)}`);
 }
