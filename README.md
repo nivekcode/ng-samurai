@@ -1,5 +1,18 @@
 # ng-samurai
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
+
+- [ng-samurai](#ng-samurai)
+  - [Installation](#installation)
+  - [Getting started](#getting-started)
+  - [Split](#split)
+  - [Generate subentry](#generate-subentry)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 > Improve tree shaking for your Angular library
 
 Nowadays, thanks to the Angular CLI, libraries are easy to create. They are a great way to share code across multiple applications.
