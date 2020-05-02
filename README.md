@@ -1,19 +1,12 @@
 # ng-samurai
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
+> Improve tree shaking of your Angular library
 
 - [ng-samurai](#ng-samurai)
   - [Installation](#installation)
   - [Getting started](#getting-started)
   - [Split](#split)
   - [Generate subentry](#generate-subentry)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-> Improve tree shaking for your Angular library
 
 Nowadays, thanks to the Angular CLI, libraries are easy to create. They are a great way to share code across multiple applications.
 Since they can be used in many places, performance is a critical aspect. A library that doesn’t perform can slow down multiple applications!
@@ -37,7 +30,7 @@ npm i -D ng-samurai
 Once ng-samurai is installed we have two different schematics commands available - one for spliting an existing library
 into multiple chunks (subentries) and another one for creating a new subentry.
 
-## Split
+### Split
 
 Spliting your libary automatically into multiple chunks our library project needs to fullfill a couple of cirterias:
 
@@ -57,7 +50,7 @@ This will do the following things:
 - Will update the `public-api` in the root level and export all subentries
 - Will adjust the paths of your `tsconfig.json` so that your IDEA understands subentris
 
-## Generate subentry
+### Generate subentry
 
 Once your library is converted to subentries, it's likely that you want to add new subentries. To do so, you can run
 the following command:
