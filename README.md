@@ -2,10 +2,13 @@
 
 > Improve tree shaking of your Angular library
 
+- [Overview](#overview)
 - [Installation](#installation)
 - [Getting started](#getting-started)
 - [Split](#split)
 - [Generate subentry](#generate-subentry)
+
+## Overview
 
 Nowadays, thanks to the Angular CLI, libraries are easy to create. They are a great way to share code across multiple applications.
 Since they can be used in many places, performance is a critical aspect. A library that doesn’t perform can slow down multiple applications!
