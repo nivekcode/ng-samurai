@@ -1,7 +1,8 @@
 # Ignores TypeScript files, but keeps definitions.
 !*.d.ts
 
-*.ts(!**/files/**/*.{ts,json})
+*.ts
+!**/files/**/*.{ts,json}
 
 .idea
 
