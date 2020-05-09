@@ -97,7 +97,8 @@ describe('generate-subentry', () => {
     const expectedContent = {
       ngPackage: {
         lib: {
-          entryFile: 'public-api.ts'
+          entryFile: 'public-api.ts',
+          cssUrl: 'inline'
         }
       }
     };

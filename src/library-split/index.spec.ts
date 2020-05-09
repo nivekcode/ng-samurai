@@ -209,7 +209,8 @@ describe('split', () => {
       const expectedSubentryConfig = {
         ngPackage: {
           lib: {
-            entryFile: 'public-api.ts'
+            entryFile: 'public-api.ts',
+            cssUrl: 'inline'
           }
         }
       };
@@ -229,7 +230,8 @@ describe('split', () => {
       const expectedSubentryConfig = {
         ngPackage: {
           lib: {
-            entryFile: 'public-api.ts'
+            entryFile: 'public-api.ts',
+            cssUrl: 'inline'
           }
         }
       };
