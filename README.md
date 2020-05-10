@@ -1,14 +1,26 @@
-![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/logo/ng-samurai.png)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-> Improve tree shaking of your Angular library - more details on this [blog post](TODO)
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
 - [Overview](#overview)
 - [Installation](#installation)
 - [Getting started](#getting-started)
-- [Split](#split)
-- [Generate subentry](#generate-subentry)
+  - [Split](#split)
+    - [Prerequisit for a successfull split](#prerequisit-for-a-successfull-split)
+      - [Folder structure](#folder-structure)
+      - [Circular dependencies](#circular-dependencies)
+      - [Each file needs to belong to a module](#each-file-needs-to-belong-to-a-module)
+  - [Generate subentry](#generate-subentry)
+- [Further resources](#further-resources)
 
-## Overview
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/logo/ng-samurai.png)
+
+> Improve tree shaking of your Angular library - more details on this [blog post](TODO)
+
+# Overview
 
 Nowadays, thanks to the Angular CLI, libraries are easy to create. They are a great way to share code across multiple applications.
 Since they can be used in many places, performance is a critical aspect. A library that doesn’t perform can slow down multiple applications!
@@ -90,7 +102,8 @@ This will do the following things:
 - Will create a (`module`, `component`, `index.ts`, `public-api.ts`, `package.json`)
 - Will export the module and the component from the `public-api.ts`
 
-#Further resources
+# Further resources
+
 If the topic of subentries is new to you. The following resources explain subentries in
 more detail.
 
