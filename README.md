@@ -1,3 +1,5 @@
+![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/logo/ng-samurai.png)
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -15,8 +17,6 @@
 - [Further resources](#further-resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/logo/ng-samurai.png)
 
 > Improve tree shaking of your Angular library - more details on this [blog post](TODO)
 
@@ -74,7 +74,11 @@ For ng-samurai to function appropriately, there are certain requirements your li
 #### Folder structure
 
 Converting your library to subentries may also require a change of the folder structure. Each module will result in a subentry and needs its folder. Subentries can not have multiple modules.
+
+_Valid file structure_
 ![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/prerequisite/file-structure-valid.png)
+
+_Invalid file structure_
 ![Logo](https://raw.githubusercontent.com/kreuzerk/ng-samurai/master/docs/prerequisite/file-structure-invalid.png)
 
 #### Circular dependencies
