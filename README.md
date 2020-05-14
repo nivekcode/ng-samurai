@@ -16,7 +16,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-> Improve tree shaking of your Angular library - more details on this [blog post](TODO)
+> Improve tree shaking of your Angular library - more details on this [blog post](https://medium.com/@kevinkreuzer/ng-samurai-schematics-to-improve-tree-shaking-of-angular-libraries-83656ca22d9e)
 
 # Overview
 
