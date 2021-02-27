@@ -49,7 +49,7 @@ into multiple chunks (subentries) and another one for creating a new subentry.
 
 Spliting your libary automatically into multiple chunks our library project needs to fullfill a couple of cirterias:
 
-- Nesting of modules: Modules used bx other modules can only be siblings and never children. There should always be one
+- Nesting of modules: Modules used by other modules can only be siblings and never children. There should always be one
   only one module per subentry.
 
 Go ahead and run the following command in the root of your project:
