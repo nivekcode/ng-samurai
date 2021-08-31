@@ -19,8 +19,14 @@ import { ModuleOptions } from '@schematics/angular/utility/find-module';
 
 export function generateSubentry(_options: SubentryOptions): Rule {
   return (tree: Tree, _context: SchematicContext) => {
-    const moduleSchematicsOptions = { ..._options };
-    const componentSchematicsOptions = { ..._options };
+    const moduleSchematicsOptions = { name: _options.name, path: _options.path };
+    const componentSchematicsOptions = {
+      name: _options.name,
+      path: _options.path,
+      inlineStyle: _options.inlineStyle,
+      inlineTemplate: _options.inlineTemplate,
+      skipTests: _options.skipTests
+    };
 
     const workspaceAsBuffer = tree.read('angular.json');
     if (!workspaceAsBuffer) {
