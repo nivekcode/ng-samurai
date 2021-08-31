@@ -63,7 +63,7 @@ export function generateSubentry(_options: SubentryOptions): Rule {
     if (_options.generateModule || _options.generateComponent) {
       rules.push(
         externalSchematic('@schematics/angular', 'module', {
-          name: _options.name,
+          ...moduleSchematicsOptions,
           project: projectName
         })
       );
@@ -72,7 +72,7 @@ export function generateSubentry(_options: SubentryOptions): Rule {
     if (_options.generateComponent) {
       rules.push(
         externalSchematic('@schematics/angular', 'component', {
-          name: _options.name,
+          ...componentSchematicsOptions,
           project: projectName
         })
       );
