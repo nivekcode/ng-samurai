@@ -22,12 +22,11 @@
   "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
-    "@angular-devkit/core": "^9.0.0",
-    "@angular-devkit/schematics": "^9.0.0",
-    "@schematics/angular": "^9.0.0",
+    "@angular-devkit/core": "^12.2.3",
+    "@angular-devkit/schematics": "^12.2.3",
+    "@schematics/angular": "^12.2.3",
     "boxen": "^4.2.0",
-    "chalk": "^4.0.0",
-    "typescript": "^3.8.3"
+    "chalk": "^4.0.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
@@ -38,7 +37,8 @@
     "pretty-quick": "^2.0.1",
     "semantic-release": "^17.0.7",
     "ts-jest": "^25.4.0",
-    "ts-node": "^8.6.2"
+    "ts-node": "^8.6.2",
+    "typescript": "^4.4.2"
   },
   "repository": {
     "type": "git",
