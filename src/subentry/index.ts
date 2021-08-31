@@ -15,6 +15,7 @@ import { strings } from '@angular-devkit/core';
 import { parseName } from '@schematics/angular/utility/parse-name';
 
 import { Schema as SubentryOptions } from './schema.model';
+import { ModuleOptions } from '@schematics/angular/utility/find-module';
 
 export function generateSubentry(_options: SubentryOptions): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -56,7 +57,7 @@ export function generateSubentry(_options: SubentryOptions): Rule {
     if (_options.generateModule || _options.generateComponent) {
       rules.push(
         externalSchematic('@schematics/angular', 'module', {
-          ...moduleSchematicsOptions,
+          name: _options.name,
           project: projectName
         })
       );
@@ -65,7 +66,7 @@ export function generateSubentry(_options: SubentryOptions): Rule {
     if (_options.generateComponent) {
       rules.push(
         externalSchematic('@schematics/angular', 'component', {
-          ...componentSchematicsOptions,
+          name: _options.name,
           project: projectName
         })
       );
