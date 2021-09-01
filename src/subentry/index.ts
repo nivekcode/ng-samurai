@@ -15,7 +15,6 @@ import { strings } from '@angular-devkit/core';
 import { parseName } from '@schematics/angular/utility/parse-name';
 
 import { Schema as SubentryOptions } from './schema.model';
-import { ModuleOptions } from '@schematics/angular/utility/find-module';
 
 export function generateSubentry(_options: SubentryOptions): Rule {
   return (tree: Tree, _context: SchematicContext) => {

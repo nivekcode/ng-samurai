@@ -309,7 +309,12 @@ describe('split', () => {
 
   describe('tsconfig', () => {
     function deletePathsFromTsconfig() {
-      const tsconfigContent = JSON.parse(appTree.readContent('tsconfig.json'));
+      const tsconfigContent = JSON.parse(
+        appTree
+          .read('tsconfig.json')
+          .toString()
+          .replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '')
+      );
       delete tsconfigContent.compilerOptions.paths;
       appTree.overwrite('tsconfig.json', JSON.stringify(tsconfigContent));
     }
